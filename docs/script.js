@@ -21,8 +21,13 @@ var controller = new ScrollMagic.Controller();
 var selectableYears = d3.selectAll(".year-row-year");
 var rightCol = d3.select(".right-col");
 var leftCol = d3.select(".left-col")
+var mobile = false;
 var mapWidth = Math.min(viewportWidth*.75 - 370,600);
-console.log(viewportWidth*.75 - 400);
+
+if( /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  mobile = true;
+  mapWidth = viewportWidth;
+}
 var laHighlight = rightCol.select(".zoom-highlight")
 var states = [
   ["Maine","ME",1,"Northeast",23],
@@ -79,11 +84,12 @@ var states = [
   ]
   ;
 
-var fixedDiv = d3.select(".circle-fix")
-  .select("svg")
-  .attr("width",viewportWidth)
-  .attr("height",viewportHeight)
-  .select("g");
+  var fixedDiv = d3.select(".circle-fix")
+    .select("svg")
+    .attr("width",viewportWidth)
+    .attr("height",viewportHeight)
+    .select("g")
+    ;
 
 d3.csv("all_points_new_2.csv", function(error, allPoints) {
 d3.csv("allpoints.csv", function(error, allPointsOld) {
@@ -276,18 +282,6 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
     ;
 
   // svg.attr("clip-path", "url(#clip)")
-
-  // var svgPopulation = populationWrapper.select("svg")
-  //   .attr("width","100%")
-  //   .attr("height","100%")
-  //   .attr("viewBox","350 0 580 580")
-  //   ;
-
-  // var svgIncarceration = incarcerationWrapper.select("svg")
-  //   .attr("width","100%")
-  //   .attr("height","100%")
-  //   .attr("viewBox","350 0 580 580")
-  //   ;
 
   function adjustCircles(duration){
 
@@ -635,7 +629,7 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
 
   function setupLayout(){
 
-    contentContainerWidth = Math.min(mapWidth,viewportWidth*.75-162);
+    contentContainerWidth = Math.min(mapWidth,600);
     heightPadding = (viewportHeight-contentContainerWidth)/2;
     var contentContainer = d3.select(".content-container");
 
@@ -644,10 +638,12 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
       // .style("right","162px")
       ;
 
+    console.log();
+
     slaveryContainer
       .datum("slavery")
-      .style("width",contentContainerWidth/2+"px")
-      .style("height",contentContainerWidth/2+"px")
+      // .style("width",contentContainerWidth+"px")
+      //.style("height",+"px")
       // .style("top",(heightPadding)+"px")
       ;
 
@@ -1252,16 +1248,22 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
   }
 
   function startLabelChange(text){
-    startLabels
-      .text(text)
-      .style("opacity",0)
-      .style("top","570px")
-      .transition()
-      .duration(750)
-      .delay(750)
-      .style("top","610px")
-      .style("opacity",1)
-      ;
+    if(mobile){
+      startLabels
+        .text(text)
+        ;
+    }else{
+      startLabels
+        .text(text)
+        .style("opacity",0)
+        .style("top","570px")
+        .transition()
+        .duration(750)
+        .delay(750)
+        .style("top","610px")
+        .style("opacity",1)
+        ;
+    }
   }
 
   // function unZoom(){
@@ -1403,142 +1405,289 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
 
   makeLegends();
 
-  uiBoxes
-    .style("width",function(d){
-      if(d=="slavery"){
-        return mapWidth+"px";
-      }
-      return "70px"
-    })
-    .style("height",function(d){
-      if(d=="slavery"){
-        return mapWidth+"px";
-      }
-      return "70px"
-    })
-    .style("top",function(d){
-      if(d=="slavery"){
-        return "0px"
-      }
-      return "20px"
-    })
-    .style("left",function(d){
-      if(d=="slavery"){
-        return (contentContainerWidth-mapWidth)/2+"px";
-      }
-      return "-100px";
-    })
-    ;
+  // uiBoxes
+  //   .style("width",function(d){
+  //     if(d=="slavery"){
+  //       return mapWidth+"px";
+  //     }
+  //     return "70px"
+  //   })
+  //   .style("height",function(d){
+  //     if(d=="slavery"){
+  //       return mapWidth+"px";
+  //     }
+  //     return "70px"
+  //   })
+  //   .style("top",function(d){
+  //     if(d=="slavery"){
+  //       return "0px"
+  //     }
+  //     return "20px"
+  //   })
+  //   .style("left",function(d){
+  //     if(d=="slavery"){
+  //       return (contentContainerWidth-mapWidth)/2+"px";
+  //     }
+  //     return "-100px";
+  //   })
+  //   ;
 
 
   setupToggles();
   showStateBubbles(yearBubblesVisible);
 
-  // var moveNavigator = new ScrollMagic.Scene({
-  //     // triggerElement: ".third-chart-wrapper",
-  //     triggerElement: ".slavery-trigger",
-  //     triggerHook:1,
-  //     offset: 0,
-  //     duration:500
-  //   })
-  //   // .addIndicators({name: "slavery"}) // add indicators (requires plugin)
-  //   .addTo(controller)
-  //   .on("enter",function(e){
-  //     if(e.target.controller().info("scrollDirection") == "REVERSE"){
-  //     }
-  //     else{
-  //       uiZoom("slavery");
-  //     }
-  //     ;
-  //   })
-  //   .on("leave",function(e){
-  //     if(e.target.controller().info("scrollDirection") == "FORWARD"){
-  //       navigatorElement.transition().duration(1000).style("right","0px");
-  //     }
-  //     else{
-  //       navigatorElement.transition().duration(1000).style("right","-162px");
-  //       unZoom();
-  //     }
-  //   })
-  //   ;
+  if(!mobile){
+    var resetAll = new ScrollMagic.Scene({
+        // triggerElement: ".third-chart-wrapper",
+        triggerElement: ".slavery-trigger",
+        triggerHook:.5,
+        offset: 0,
+        duration:500
+      })
+      // .addIndicators({name: "slavery"}) // add indicators (requires plugin)
+      .addTo(controller)
+      .on("enter",function(e){
+        if(yearSelected!="1860"){
+          toolTipText = "slaves";
 
-  var resetAll = new ScrollMagic.Scene({
-      // triggerElement: ".third-chart-wrapper",
-      triggerElement: ".slavery-trigger",
-      triggerHook:.5,
-      offset: 0,
-      duration:500
-    })
-    // .addIndicators({name: "slavery"}) // add indicators (requires plugin)
-    .addTo(controller)
-    .on("enter",function(e){
-      if(yearSelected!="1860"){
-        toolTipText = "slaves";
+          selectableYears.classed("year-row-selected",false);
 
-        selectableYears.classed("year-row-selected",false);
+          var elementSelected = selectableYears.filter(function(d,i){
+            return i==2;
+          });
 
-        var elementSelected = selectableYears.filter(function(d,i){
-          return i==2;
+          elementSelected.classed("year-row-selected",true);
+          var position = elementSelected.node().getBoundingClientRect();
+          doppler(position);
+
+          populationLegendTitle.text("Slave Population")
+          slaveryLegendTitle.text("Slave Population as % of Total")
+          colorGradient.domain(colorGradientDomain);
+
+          var year = 1860;
+          yearPopulationSelected = +year;
+          yearSelected = "1860";
+          adjustCircles(1000);
+          var text = "U.S. Slave Pop. in "+year;
+          startLabelChange(text);
+
+        }
+      })
+      ;
+
+    var zoomPopulation = new ScrollMagic.Scene({
+        // triggerElement: ".third-chart-wrapper",
+        triggerElement: ".black-pop-trigger",
+        triggerHook:.5,
+        offset: 0,
+        duration:500
+      })
+      // .addIndicators({name: "population"}) // add indicators (requires plugin)
+      .addTo(controller)
+      .on("enter",function(e){
+        if(yearSelected!="pop_2010"){
+          toolTipText = "Black";
+
+          selectableYears.classed("year-row-selected",false);
+
+          var elementSelected = selectableYears.filter(function(d,i){
+            return +d3.select(this).text()=="2010";
+          });
+
+          elementSelected.classed("year-row-selected",true);
+          var position = elementSelected.node().getBoundingClientRect();
+          doppler(position);
+
+          populationLegendTitle.text("Black Population")
+          slaveryLegendTitle.text("Black Population as % of Total")
+          colorGradient.domain(colorGradientDomain);
+
+          var year = 2010;
+          yearPopulationSelected = +year;
+          yearSelected = "pop_".concat(year);
+          adjustCircles(1000);
+          var text = "U.S. Black Pop. in "+year;
+          startLabelChange(text);
+
+        }
+
+        if(e.target.controller().info("scrollDirection") == "REVERSE"){
+        }
+        else{
+        }
+        ;
+      })
+      .on("leave",function(e){
+        if(e.target.controller().info("scrollDirection") == "FORWARD"){
+        }
+        else{
+        }
+      })
+      ;
+
+    function doppler(position){
+      var circle = fixedDiv
+        .append("circle")
+        .attr("cy",position.top+13)
+        .attr("cx",position.left+25)
+        .attr("r",6)
+
+      circle
+        .transition()
+        .duration(2000)
+        .ease("linear")
+        .attr("r",100)
+        .style("opacity",0)
+        .each("end",function(){
+          d3.select(this).remove();
+        })
+        ;
+
+    }
+
+    var showBubbles = new ScrollMagic.Scene({
+        // triggerElement: ".third-chart-wrapper",
+        triggerElement: ".show-bubbles",
+        triggerHook:.5,
+        offset: 0,
+        duration:500
+      })
+      // .addIndicators({name: "bubbles"}) // add indicators (requires plugin)
+      .addTo(controller)
+      .on("enter",function(e){
+
+        // toolTipText = "Black";
+
+        var previous = yearBubblesVisible;
+        yearAdmissionsElements.classed("admissions-button-selected",false);
+
+        var elementSelected = yearAdmissionsElements.filter(function(d,i){
+          return i==3;
         });
 
-        elementSelected.classed("year-row-selected",true);
+        elementSelected.classed("admissions-button-selected",true);
         var position = elementSelected.node().getBoundingClientRect();
         doppler(position);
 
-        populationLegendTitle.text("Slave Population")
-        slaveryLegendTitle.text("Slave Population as % of Total")
-        colorGradient.domain(colorGradientDomain);
+        var buttonText = "2010";
+        svg.classed("bubbles-set",true);
+        if(yearBubblesVisible != buttonText){
+          yearBubblesVisible=buttonText;
+          showStateBubbles(yearBubblesVisible);
+        }
+        if(previous == false || yearBubblesVisible == false){
+          stateIncarcerationLegend
+            .style("top",function(){
+              if(!yearBubblesVisible){
+                return "40px";
+              }
+              return "20px";
+            })
+            .style("opacity",function(){
+              if(yearBubblesVisible){
+                return 0;
+              }
+              return 1;
+            })
+            .transition()
+            .duration(700)
+            .style("top",function(){
+              if(yearBubblesVisible){
+                return "40px";
+              }
+              return "20px";
+            })
+            .style("opacity",function(){
+              if(yearBubblesVisible){
+                return 1;
+              }
+              return 0;
+            })
+            ;
+        }
+        stateAbv = d3.selectAll(".state-abv")
+      })
+      .on("leave",function(e){
+        var previous = yearBubblesVisible;
+        yearAdmissionsElements.classed("admissions-button-selected",false);
 
-        var year = 1860;
-        yearPopulationSelected = +year;
-        yearSelected = "1860";
+        var elementSelected = yearAdmissionsElements.filter(function(d,i){
+          return i==0;
+        });
+        svg.classed("bubbles-set",false);
+        elementSelected.classed("admissions-button-selected",true);
+        var position = elementSelected.node().getBoundingClientRect();
+        doppler(position);
+
+        yearBubblesVisible = false;
+        showStateBubbles(yearBubblesVisible);
+        if(previous == false || yearBubblesVisible == false){
+          stateIncarcerationLegend
+            .style("top",function(){
+              if(!yearBubblesVisible){
+                return "40px";
+              }
+              return "20px";
+            })
+            .style("opacity",function(){
+              if(yearBubblesVisible){
+                return 0;
+              }
+              return 1;
+            })
+            .transition()
+            .duration(700)
+            .style("top",function(){
+              if(yearBubblesVisible){
+                return "40px";
+              }
+              return "20px";
+            })
+            .style("opacity",function(){
+              if(yearBubblesVisible){
+                return 1;
+              }
+              return 0;
+            })
+            ;
+        }
+
+      })
+      ;
+
+    var zoomIncarceration = new ScrollMagic.Scene({
+        // triggerElement: ".third-chart-wrapper",
+        triggerElement: ".incar-trigger",
+        triggerHook:.5,
+        offset: 0
+      })
+      // .addIndicators({name: "incarceration"}) // add indicators (requires plugin)
+      .addTo(controller)
+      .on("enter",function(e){
+        populationLegendTitle.text("Black Population")
+        colorGradient.domain(colorGradientJailDomain);
+        var elementSelected = yearIncElements.filter(function(d,i){
+          return i==0;
+        });
+        elementSelected.classed("admissions-button-selected",true);
+
+        var year = 2010;
+        yearIncarcerationSelected = +year;
+        yearSelected = "jail_".concat(year);
         adjustCircles(1000);
-        var text = "U.S. Slave Pop. in "+year;
+        var text = "Jail Incarceration Rate in "+year;
+        startLabels.style("width","249px")
         startLabelChange(text);
 
-      }
-    })
-    ;
-
-
-  // var zoomSlavery = new ScrollMagic.Scene({
-  //     // triggerElement: ".third-chart-wrapper",
-  //     triggerElement: ".zoom-trigger",
-  //     triggerHook:.5,
-  //     offset: 0,
-  //     duration:250
-  //   })
-  //   .addIndicators({name: "zoom lousiana"}) // add indicators (requires plugin)
-  //   .addTo(controller)
-  //   .on("enter",function(e){
-  //     if(e.target.controller().info("scrollDirection") == "REVERSE"){
-  //     }
-  //     else{
-  //       slaveryZoom();
-  //     }
-  //     ;
-  //   })
-  //   .on("leave",function(e){
-  //     slaveryUnZoom();
-  //     // if(e.target.controller().info("scrollDirection") == "FORWARD"){
-  //     // }
-  //     // else{
-  //     //   slaveryUnZoom();
-  //     // }
-  //   })
-  //   ;
-
-  var zoomPopulation = new ScrollMagic.Scene({
-      // triggerElement: ".third-chart-wrapper",
-      triggerElement: ".black-pop-trigger",
-      triggerHook:.5,
-      offset: 0,
-      duration:500
-    })
-    // .addIndicators({name: "population"}) // add indicators (requires plugin)
-    .addTo(controller)
-    .on("enter",function(e){
-      if(yearSelected!="pop_2010"){
+        // jailSelector.transition().duration(1000).delay(1000).style("top","47px").each("end",function(){
+        //   var position = elementSelected.node().getBoundingClientRect();
+        //   doppler(position);
+        // })
+        fadeOutElements.transition().duration(1000).style("opacity",0);
+        slaveryLegendTop.style("opacity",0);
+        slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
+      })
+      .on("leave",function(e){
         toolTipText = "Black";
 
         selectableYears.classed("year-row-selected",false);
@@ -1549,7 +1698,6 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
 
         elementSelected.classed("year-row-selected",true);
         var position = elementSelected.node().getBoundingClientRect();
-        doppler(position);
 
         populationLegendTitle.text("Black Population")
         slaveryLegendTitle.text("Black Population as % of Total")
@@ -1560,214 +1708,15 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
         yearSelected = "pop_".concat(year);
         adjustCircles(1000);
         var text = "U.S. Black Pop. in "+year;
+        startLabels.style("width",null)
         startLabelChange(text);
-
-      }
-
-      if(e.target.controller().info("scrollDirection") == "REVERSE"){
-      }
-      else{
-      }
-      ;
-    })
-    .on("leave",function(e){
-      if(e.target.controller().info("scrollDirection") == "FORWARD"){
-      }
-      else{
-      }
-    })
-    ;
-
-  function doppler(position){
-    var circle = fixedDiv
-      .append("circle")
-      .attr("cy",position.top+13)
-      .attr("cx",position.left+25)
-      .attr("r",6)
-
-    circle
-      .transition()
-      .duration(2000)
-      .ease("linear")
-      .attr("r",100)
-      .style("opacity",0)
-      .each("end",function(){
-        d3.select(this).remove();
+        fadeOutElements.transition().duration(1000).delay(1000).style("opacity",1);
+        slaveryLegendTop.style("opacity",1);
+        slaveryLegendBottom.transition().duration(500).style("opacity",null).style("top",null);
       })
       ;
 
   }
-
-  var showBubbles = new ScrollMagic.Scene({
-      // triggerElement: ".third-chart-wrapper",
-      triggerElement: ".show-bubbles",
-      triggerHook:.5,
-      offset: 0,
-      duration:500
-    })
-    // .addIndicators({name: "bubbles"}) // add indicators (requires plugin)
-    .addTo(controller)
-    .on("enter",function(e){
-
-      // toolTipText = "Black";
-
-      var previous = yearBubblesVisible;
-      yearAdmissionsElements.classed("admissions-button-selected",false);
-
-      var elementSelected = yearAdmissionsElements.filter(function(d,i){
-        return i==3;
-      });
-
-      elementSelected.classed("admissions-button-selected",true);
-      var position = elementSelected.node().getBoundingClientRect();
-      doppler(position);
-
-      var buttonText = "2010";
-      svg.classed("bubbles-set",true);
-      if(yearBubblesVisible != buttonText){
-        yearBubblesVisible=buttonText;
-        showStateBubbles(yearBubblesVisible);
-      }
-      if(previous == false || yearBubblesVisible == false){
-        stateIncarcerationLegend
-          .style("top",function(){
-            if(!yearBubblesVisible){
-              return "40px";
-            }
-            return "20px";
-          })
-          .style("opacity",function(){
-            if(yearBubblesVisible){
-              return 0;
-            }
-            return 1;
-          })
-          .transition()
-          .duration(700)
-          .style("top",function(){
-            if(yearBubblesVisible){
-              return "40px";
-            }
-            return "20px";
-          })
-          .style("opacity",function(){
-            if(yearBubblesVisible){
-              return 1;
-            }
-            return 0;
-          })
-          ;
-      }
-      stateAbv = d3.selectAll(".state-abv")
-    })
-    .on("leave",function(e){
-      var previous = yearBubblesVisible;
-      yearAdmissionsElements.classed("admissions-button-selected",false);
-
-      var elementSelected = yearAdmissionsElements.filter(function(d,i){
-        return i==0;
-      });
-      svg.classed("bubbles-set",false);
-      elementSelected.classed("admissions-button-selected",true);
-      var position = elementSelected.node().getBoundingClientRect();
-      doppler(position);
-
-      yearBubblesVisible = false;
-      showStateBubbles(yearBubblesVisible);
-      if(previous == false || yearBubblesVisible == false){
-        stateIncarcerationLegend
-          .style("top",function(){
-            if(!yearBubblesVisible){
-              return "40px";
-            }
-            return "20px";
-          })
-          .style("opacity",function(){
-            if(yearBubblesVisible){
-              return 0;
-            }
-            return 1;
-          })
-          .transition()
-          .duration(700)
-          .style("top",function(){
-            if(yearBubblesVisible){
-              return "40px";
-            }
-            return "20px";
-          })
-          .style("opacity",function(){
-            if(yearBubblesVisible){
-              return 1;
-            }
-            return 0;
-          })
-          ;
-      }
-
-    })
-    ;
-
-  var zoomIncarceration = new ScrollMagic.Scene({
-      // triggerElement: ".third-chart-wrapper",
-      triggerElement: ".incar-trigger",
-      triggerHook:.5,
-      offset: 0
-    })
-    // .addIndicators({name: "incarceration"}) // add indicators (requires plugin)
-    .addTo(controller)
-    .on("enter",function(e){
-      populationLegendTitle.text("Black Population")
-      colorGradient.domain(colorGradientJailDomain);
-      var elementSelected = yearIncElements.filter(function(d,i){
-        return i==0;
-      });
-      elementSelected.classed("admissions-button-selected",true);
-
-      var year = 2010;
-      yearIncarcerationSelected = +year;
-      yearSelected = "jail_".concat(year);
-      adjustCircles(1000);
-      var text = "Jail Incarceration Rate in "+year;
-      startLabels.style("width","249px")
-      startLabelChange(text);
-
-      // jailSelector.transition().duration(1000).delay(1000).style("top","47px").each("end",function(){
-      //   var position = elementSelected.node().getBoundingClientRect();
-      //   doppler(position);
-      // })
-      fadeOutElements.transition().duration(1000).style("opacity",0);
-      slaveryLegendTop.style("opacity",0);
-      slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
-    })
-    .on("leave",function(e){
-      toolTipText = "Black";
-
-      selectableYears.classed("year-row-selected",false);
-
-      var elementSelected = selectableYears.filter(function(d,i){
-        return +d3.select(this).text()=="2010";
-      });
-
-      elementSelected.classed("year-row-selected",true);
-      var position = elementSelected.node().getBoundingClientRect();
-
-      populationLegendTitle.text("Black Population")
-      slaveryLegendTitle.text("Black Population as % of Total")
-      colorGradient.domain(colorGradientDomain);
-
-      var year = 2010;
-      yearPopulationSelected = +year;
-      yearSelected = "pop_".concat(year);
-      adjustCircles(1000);
-      var text = "U.S. Black Pop. in "+year;
-      startLabels.style("width",null)
-      startLabelChange(text);
-      fadeOutElements.transition().duration(1000).delay(1000).style("opacity",1);
-      slaveryLegendTop.style("opacity",1);
-      slaveryLegendBottom.transition().duration(500).style("opacity",null).style("top",null);
-    })
-    ;
 
 //flag.csv
 });
