@@ -1436,7 +1436,7 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
   setupToggles();
   showStateBubbles(yearBubblesVisible);
 
-  if(!mobile){
+  // if(!mobile){
     var resetAll = new ScrollMagic.Scene({
         // triggerElement: ".third-chart-wrapper",
         triggerElement: ".slavery-trigger",
@@ -1526,22 +1526,24 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
       ;
 
     function doppler(position){
-      var circle = fixedDiv
-        .append("circle")
-        .attr("cy",position.top+13)
-        .attr("cx",position.left+25)
-        .attr("r",6)
+      if(!mobile){
+        var circle = fixedDiv
+          .append("circle")
+          .attr("cy",position.top+13)
+          .attr("cx",position.left+25)
+          .attr("r",6)
 
-      circle
-        .transition()
-        .duration(2000)
-        .ease("linear")
-        .attr("r",100)
-        .style("opacity",0)
-        .each("end",function(){
-          d3.select(this).remove();
-        })
-        ;
+        circle
+          .transition()
+          .duration(2000)
+          .ease("linear")
+          .attr("r",100)
+          .style("opacity",0)
+          .each("end",function(){
+            d3.select(this).remove();
+          })
+          ;
+      }
 
     }
 
@@ -1716,7 +1718,7 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
       })
       ;
 
-  }
+  // }
 
 //flag.csv
 });
