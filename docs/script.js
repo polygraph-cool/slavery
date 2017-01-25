@@ -91,15 +91,9 @@ var states = [
     .select("g")
     ;
 
-d3.csv("all_points_new_2.csv", function(error, allPoints) {
-d3.csv("allpoints.csv", function(error, allPointsOld) {
+d3.csv("all_points_new_3.csv", function(error, allPoints) {
   d3.json("us.json", function(error, us) {
-    // d3.csv("line_paths.csv", function(error, borderPaths) {
-      d3.csv("population.csv", function(error, populationData) {
-        d3.csv("incarceration_2.csv", function(error, incarcerationData) {
-          d3.csv("admissions.csv", function(error, admissionsData) {
-            d3.csv("jail.csv", function(error, jailData) {
-              d3.csv("flag.csv", function(error, flagData) {
+    d3.csv("incarceration_2.csv", function(error, incarcerationData) {
 
   leftCol.style("visibility","visible");
 
@@ -110,24 +104,12 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
     return +d.id != 11;
   })
 
-  var admissionsMap = d3.map(admissionsData,function(d){
-    return d.fips;
-  });
-
-  var populationMap = d3.map(populationData,function(d){
-    return d.county;
-  });
-
   var incarcerationMap = d3.map(incarcerationData,function(d){
     return +d.id;
   })
 
   var statesMap = d3.map(states,function(d){
     return d[4];
-  })
-
-  var jailMap = d3.map(jailData,function(d){
-    return +d.county;
   })
 
   var xExtent = d3.extent(allPoints, function(d) { return +d.x });
@@ -291,44 +273,82 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
       })
       ;
 
-    circles
-      .sort(function(a,b){
-        return a.r - b.r
-      })
-      ;
+    if(!mobile){
+      circles
+        .sort(function(a,b){
+          return a.r - b.r
+        })
+        ;
 
-    circles
-      .transition()
-      .duration(function(d){
-        if(d.r>3.7){
-          return duration;
-        }
-        return 0;
-      })
-      .delay(function(d,i){
-        if(d.r>3.7){
+      circles
+        .transition()
+        .duration(function(d){
+          if(d.r>3.7){
+            return duration;
+          }
           return 0;
-        }
-        return d.r*duration;
-      })
-      .style("stroke-width",function(d){
-        if(d.r>3.7){
-          return .75
-        }
-      })
-      .attr("r",function(d){
-        return d.r;
-      })
-      .attr("stroke",function(d){
-        if(d.r>3.7){
-          return "#0a061b";
-        }
-        return null;
-      })
-      .attr("fill",function(d){
-        return getColor(d);
-      })
-      ;
+        })
+        .delay(function(d,i){
+          if(d.r>3.7){
+            return 0;
+          }
+          return d.r*duration;
+        })
+        .style("stroke-width",function(d){
+          if(d.r>3.7){
+            return .75
+          }
+        })
+        .attr("r",function(d){
+          return d.r;
+        })
+        .attr("stroke",function(d){
+          if(d.r>3.7){
+            return "#0a061b";
+          }
+          return null;
+        })
+        .attr("fill",function(d){
+          return getColor(d);
+        })
+        ;
+
+    }
+    else{
+      circles
+        .transition()
+        .duration(function(d){
+          if(d.r>3.7){
+            return duration;
+          }
+          return 0;
+        })
+        .delay(function(d,i){
+          if(d.r>3.7){
+            return 0;
+          }
+          return d.r*duration;
+        })
+        .style("stroke-width",function(d){
+          if(d.r>3.7){
+            return .75
+          }
+        })
+        .attr("r",function(d){
+          return d.r;
+        })
+        .attr("stroke",function(d){
+          if(d.r>3.7){
+            return "#0a061b";
+          }
+          return null;
+        })
+        .attr("fill",function(d){
+          return getColor(d);
+        })
+        ;
+
+    }
 
   }
 
@@ -1720,17 +1740,6 @@ d3.csv("allpoints.csv", function(error, allPointsOld) {
 
   // }
 
-//flag.csv
-});
-//admissions.csv
-});
-//admissions.csv
-});
-//incarceration.csv
-});
-//population.csv
-});
-//us.json
 });
 //line_paths.csv
 });
