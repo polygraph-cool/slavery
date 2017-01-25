@@ -91,7 +91,7 @@ var states = [
     .select("g")
     ;
 
-d3.csv("all_points_new_3.csv", function(error, allPoints) {
+d3.csv("all_points_4.csv", function(error, allPoints) {
   d3.json("us.json", function(error, us) {
     d3.csv("incarceration_2.csv", function(error, incarcerationData) {
 
@@ -221,6 +221,11 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
         total_pop:+d.black_2010,
         num_pop:+d.jail_2010*100000,
         total_pop_two:+d.total_2010
+      },
+      "jail_black_2010":{
+        total_pop:+d.black_2010,
+        num_pop:+d.jail_black_2010*100000,
+        total_pop_two:+d.black_2010
       },
       "jail_2014":{
         total_pop:+d.black_2014,
@@ -1151,15 +1156,28 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
 
       populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
       colorGradient.domain(colorGradientJailDomain);
-      selectableYears.classed("year-row-selected",false);
-      d3.select(this).classed("year-row-selected",true);
-      var year = d3.select(this).text();
-      yearIncarcerationSelected = +year;
-      yearSelected = "jail_".concat(year);
-      adjustCircles(1000);
-      var text = "U.S. Jail Rate in "+year;
-      startLabelChange(text);
 
+      yearIncElements.classed("year-row-selected",false);
+      d3.select(this).classed("year-row-selected",true);
+
+      var year = d3.select(this).text();
+
+      yearIncarcerationSelected = 2010;
+      if(year == "ALL"){
+        yearSelected = "jail_".concat(2010);
+        var text = "U.S. Jail Rate in "+2010;
+        slaveryLegendBottom.select(".jail-legend-title").html("<span class='slavery-legend-title-label'>color: </span>Jail Inmates per 100K People");
+        startLabelChange(text);
+      }
+      else{
+        yearSelected = "jail_black_".concat(2010);
+        var text = "Jail Rate Among Black Pop. in "+2010;
+        slaveryLegendBottom.select(".jail-legend-title").html("<span class='slavery-legend-title-label'>color: </span>Black Jail Inmates per 100K Black People");
+        startLabelChange(text);
+      }
+      //yearSelected = "jail_".concat(year);
+      adjustCircles(1000);
+      //
       slaveryLegendTop.style("opacity",0)
       slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
 
@@ -1689,10 +1707,12 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
       .on("enter",function(e){
         populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
         colorGradient.domain(colorGradientJailDomain);
+
+        yearIncElements.classed("year-row-selected",false)
         var elementSelected = yearIncElements.filter(function(d,i){
           return i==0;
         });
-        elementSelected.classed("admissions-button-selected",true);
+        elementSelected.classed("year-row-selected",true);
 
         var year = 2010;
         yearIncarcerationSelected = +year;
@@ -1702,10 +1722,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
         startLabels.style("width","249px")
         startLabelChange(text);
 
-        // jailSelector.transition().duration(1000).delay(1000).style("top","47px").each("end",function(){
-        //   var position = elementSelected.node().getBoundingClientRect();
-        //   doppler(position);
-        // })
+        jailSelector.transition().duration(1000).delay(1000).style("top","17px").style("opacity",1);
         fadeOutElements.transition().duration(1000).style("opacity",0);
         slaveryLegendTop.style("opacity",0);
         slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
@@ -1732,6 +1749,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
         adjustCircles(1000);
         var text = "U.S. Black Pop. in "+year;
         startLabels.style("width",null)
+        jailSelector.style("top",null).style("opacity",null);
         startLabelChange(text);
         fadeOutElements.transition().duration(1000).delay(1000).style("opacity",1);
         slaveryLegendTop.style("opacity",1);
