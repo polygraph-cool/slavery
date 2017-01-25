@@ -354,7 +354,7 @@ a:visited{
 }
 
 .population-legend-circle {
-    background: #194abf;
+    background: #cfcdd8;
     border-radius: 100%;
     margin: 0 auto;
 }
@@ -510,6 +510,7 @@ a:visited{
   stroke-width: 1.5px;
   stroke-opacity:1;
   pointer-events: none;
+  display: none;
 }
 .us-map-outline{
   stroke: rgb(207, 205, 216);
@@ -888,7 +889,7 @@ a:visited{
 }
 
 .slavery-selector .year-row-sub-head{text-align: left;line-height: 11px;}
-.slavery-selector .year-row-sub-head span{opacity: .5;font-size: 14px;letter-spacing: 0px;text-transform: capitalize;font-weight: 500;}
+.slavery-selector .year-row-sub-head span{opacity: .5;font-size: 9px;letter-spacing: 0px;text-transform: uppercase;font-weight: 300;-webkit-font-smoothing: auto;}
 .divider-entry{
 
 }
@@ -947,6 +948,13 @@ a:visited{
   font-family: "Whitney SSm A", "Whitney SSm B";
   font-size: 13px;
 }
+
+.pudding-footer{
+  position: relative;
+}
+
+.slavery-legend-title-label{font-size: 9px;opacity: .5;}
+
 
 @media only screen and (max-width: 768px) {
   .left-col{-webkit-flex-wrap: wrap;flex-wrap: wrap;width: 100%;/* display: block; */}

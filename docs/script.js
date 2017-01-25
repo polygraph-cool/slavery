@@ -162,7 +162,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
     .clamp(true)
     ;
 
-  var colorGradientJailDomain = [200,400,700,4000,5000];
+  var colorGradientJailDomain = [200,300,500,2000,5000];
   var colorGradientJail = d3.scale.linear()
   //1990
     // .domain([100,350,500,700,800]).range(["#194abf","rgb(166, 40, 126)","rgb(255, 85, 0)","rgb(242,206,206)","rgb(255,255,0)"])
@@ -759,9 +759,9 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
   adjustCircles(1000)
 
   var colorGradientIncarceration = d3.scale.pow()
-    .domain([50,600])
-    .range([7,29])
-    .exponent([3])
+    .domain([1,600])
+    .range([15,29])
+    .exponent([2])
     .clamp(true)
     ;
 
@@ -890,7 +890,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
 
   var mouseMoveCircle = mouseMoveCircleG
     .append("circle")
-    .attr("r",25)
+    .attr("r",5)
     ;
 
   var stateAbv = d3.selectAll(".state-abv");
@@ -903,7 +903,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
     }))
     //.datum(topojson.feature(us, us.objects.land))
     .attr("d", d3.geo.path())
-    .attr("transform","translate(-115,-15) scale(1.2)")
+    .attr("transform","translate(-115,-15) scale(1.20,1.20)")
     .on("mousemove",function(d){
         var coor = d3.mouse(this);
         var x2 = coor[0].toFixed(2)*1.2-115;
@@ -929,7 +929,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
           var x1 = +d.x;
           var y1 = +d.y;
           var distance = Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
-          if(distance<50){
+          if(distance<5){
             var totalPop = +d[yearSelected].total_pop_two;
             var slavePop = +d[yearSelected].num_pop;
             totalPeople = totalPop+totalPeople;
@@ -973,24 +973,24 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
     })
     ;
 
-  var paths = svg.append("g").append("path")
-    .datum(topojson.mesh(us, object, function(a, b) {
-      return a !== b;
-    }))
-    .attr("class","inter-state-paths")
-    .attr("transform","translate(-115,-15) scale(1.2)")
-    .each(function(d){
-      d.r = 8;
-    })
-    .attr("stroke",function(d){
-      return "#0a061b";
-    })
-    .attr("fill","none")
-    .attr("d", d3.geo.path())
-    // .attr("stroke","#0a061b")
-    .attr("stroke-width",1)
-    // .attr("fill","none")
-    ;
+  // var paths = svg.append("g").append("path")
+  //   .datum(topojson.mesh(us, object, function(a, b) {
+  //     return a !== b;
+  //   }))
+  //   .attr("class","inter-state-paths")
+  //   .attr("transform","translate(-115,-15) scale(1.2)")
+  //   .each(function(d){
+  //     d.r = 8;
+  //   })
+  //   .attr("stroke",function(d){
+  //     return "#0a061b";
+  //   })
+  //   .attr("fill","none")
+  //   .attr("d", d3.geo.path())
+  //   // .attr("stroke","#0a061b")
+  //   .attr("stroke-width",1)
+  //   // .attr("fill","none")
+  //   ;
 
   slaveryMapContainer.selectAll(".map-item")
     .sort(function(a,b){
@@ -1075,6 +1075,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
           if(incarcerationMap.has(+d.id)){
             var incarceration = incarcerationMap.get(+d.id)["inc_"+state];
             if(incarceration != ""){
+              return incarceration/30;
               return colorGradientIncarceration(+incarceration);
             }
           }
@@ -1148,7 +1149,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
 
     yearIncElements.on("click",function(d){
 
-      populationLegendTitle.text("Black Population")
+      populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
       colorGradient.domain(colorGradientJailDomain);
       selectableYears.classed("year-row-selected",false);
       d3.select(this).classed("year-row-selected",true);
@@ -1225,8 +1226,8 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
         selectableYears.classed("year-row-selected",false);
         d3.select(this).classed("year-row-selected",true);
 
-        populationLegendTitle.text("Slave Population")
-        slaveryLegendTitle.text("Slave Population as % of Total")
+        populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Slave Population")
+        slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Slave Population as % of Total")
 
         colorGradient.domain(colorGradientDomain);
 
@@ -1251,8 +1252,8 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
 
         selectableYears.classed("year-row-selected",false);
         d3.select(this).classed("year-row-selected",true);
-        populationLegendTitle.text("Black Population")
-        slaveryLegendTitle.text("Black Population as % of Total")
+        populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
+        slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Black Population as % of Total")
 
         colorGradient.domain(colorGradientDomain);
 
@@ -1480,8 +1481,8 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
           var position = elementSelected.node().getBoundingClientRect();
           doppler(position);
 
-          populationLegendTitle.text("Slave Population")
-          slaveryLegendTitle.text("Slave Population as % of Total")
+          populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Slave Population")
+          slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Slave Population as % of Total")
           colorGradient.domain(colorGradientDomain);
 
           var year = 1860;
@@ -1518,8 +1519,8 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
           var position = elementSelected.node().getBoundingClientRect();
           doppler(position);
 
-          populationLegendTitle.text("Black Population")
-          slaveryLegendTitle.text("Black Population as % of Total")
+          populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
+          slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Black Population as % of Total")
           colorGradient.domain(colorGradientDomain);
 
           var year = 2010;
@@ -1686,7 +1687,7 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
       // .addIndicators({name: "incarceration"}) // add indicators (requires plugin)
       .addTo(controller)
       .on("enter",function(e){
-        populationLegendTitle.text("Black Population")
+        populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
         colorGradient.domain(colorGradientJailDomain);
         var elementSelected = yearIncElements.filter(function(d,i){
           return i==0;
@@ -1721,8 +1722,8 @@ d3.csv("all_points_new_3.csv", function(error, allPoints) {
         elementSelected.classed("year-row-selected",true);
         var position = elementSelected.node().getBoundingClientRect();
 
-        populationLegendTitle.text("Black Population")
-        slaveryLegendTitle.text("Black Population as % of Total")
+        populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
+        slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Black Population as % of Total")
         colorGradient.domain(colorGradientDomain);
 
         var year = 2010;
