@@ -1480,6 +1480,60 @@ d3.csv("all_points_5.csv", function(error, allPoints) {
   setupToggles();
   showStateBubbles(yearBubblesVisible);
 
+
+  function changePopYear(){
+    if(yearSelected!="pop_2010"){
+      toolTipText = "Black";
+
+      selectableYears.classed("year-row-selected",false);
+
+      var elementSelected = selectableYears.filter(function(d,i){
+        return +d3.select(this).text()=="2010";
+      });
+
+      elementSelected.classed("year-row-selected",true);
+      var position = elementSelected.node().getBoundingClientRect();
+      doppler(position);
+
+      populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
+      slaveryLegendTitle.html("<span class='slavery-legend-title-label'>color: </span>Black Population as % of Total")
+      colorGradient.domain(colorGradientDomain);
+
+      var year = 2010;
+      yearPopulationSelected = +year;
+      yearSelected = "pop_".concat(year);
+      adjustCircles(1000);
+      var text = "U.S. Black Pop. in "+year;
+      startLabelChange(text);
+    }
+  }
+
+  function changeJail(){
+    if(yearSelected!="jail_2010"){
+      populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
+      colorGradient.domain(colorGradientJailDomain);
+
+      yearIncElements.classed("year-row-selected",false)
+      var elementSelected = yearIncElements.filter(function(d,i){
+        return i==0;
+      });
+      elementSelected.classed("year-row-selected",true);
+
+      var year = 2010;
+      yearIncarcerationSelected = +year;
+      yearSelected = "jail_".concat(year);
+      adjustCircles(1000);
+      var text = "Jail Incarceration Rate in "+year;
+      startLabels.style("width","249px")
+      startLabelChange(text);
+      slaveryLegendBottom.select(".jail-legend-title").html("<span class='slavery-legend-title-label'>color: </span>Jail Inmates per 100K People");
+      jailSelector.transition().duration(1000).delay(1000).style("top","17px").style("opacity",1);
+      fadeOutElements.transition().duration(1000).style("opacity",0);
+      slaveryLegendTop.style("opacity",0);
+      slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
+    }
+  }
+
   // if(!mobile){
     var resetAll = new ScrollMagic.Scene({
         // triggerElement: ".third-chart-wrapper",
@@ -1710,27 +1764,7 @@ d3.csv("all_points_5.csv", function(error, allPoints) {
       // .addIndicators({name: "incarceration"}) // add indicators (requires plugin)
       .addTo(controller)
       .on("enter",function(e){
-        populationLegendTitle.html("<span class='slavery-legend-title-label'>size: </span>Black Population")
-        colorGradient.domain(colorGradientJailDomain);
-
-        yearIncElements.classed("year-row-selected",false)
-        var elementSelected = yearIncElements.filter(function(d,i){
-          return i==0;
-        });
-        elementSelected.classed("year-row-selected",true);
-
-        var year = 2010;
-        yearIncarcerationSelected = +year;
-        yearSelected = "jail_".concat(year);
-        adjustCircles(1000);
-        var text = "Jail Incarceration Rate in "+year;
-        startLabels.style("width","249px")
-        startLabelChange(text);
-        slaveryLegendBottom.select(".jail-legend-title").html("<span class='slavery-legend-title-label'>color: </span>Jail Inmates per 100K People");
-        jailSelector.transition().duration(1000).delay(1000).style("top","17px").style("opacity",1);
-        fadeOutElements.transition().duration(1000).style("opacity",0);
-        slaveryLegendTop.style("opacity",0);
-        slaveryLegendBottom.transition().duration(1000).delay(1000).style("opacity",1).style("top","0px");
+        changeJail();
       })
       .on("leave",function(e){
         toolTipText = "Black";
@@ -1761,6 +1795,70 @@ d3.csv("all_points_5.csv", function(error, allPoints) {
         slaveryLegendBottom.transition().duration(500).style("opacity",null).style("top",null);
       })
       ;
+
+  function changeBubbles(dateYear,position){
+    var previous = yearBubblesVisible;
+    yearAdmissionsElements.classed("admissions-button-selected",false);
+
+    var elementSelected = yearAdmissionsElements.filter(function(d,i){
+      return i==position;
+    });
+
+    elementSelected.classed("admissions-button-selected",true);
+    var position = elementSelected.node().getBoundingClientRect();
+    doppler(position);
+
+    var buttonText = dateYear;
+    svg.classed("bubbles-set",true);
+    if(yearBubblesVisible != buttonText){
+      yearBubblesVisible=buttonText;
+      showStateBubbles(yearBubblesVisible);
+    }
+    if(previous == false || yearBubblesVisible == false){
+      stateIncarcerationLegend
+        .style("top",function(){
+          if(!yearBubblesVisible){
+            return "40px";
+          }
+          return "20px";
+        })
+        .style("opacity",function(){
+          if(yearBubblesVisible){
+            return 0;
+          }
+          return 1;
+        })
+        .transition()
+        .duration(700)
+        .style("top",function(){
+          if(yearBubblesVisible){
+            return "40px";
+          }
+          return "20px";
+        })
+        .style("opacity",function(){
+          if(yearBubblesVisible){
+            return 1;
+          }
+          return 0;
+        })
+        ;
+    }
+    stateAbv = d3.selectAll(".state-abv")
+  }
+
+  d3.selectAll(".prose-toggle").on("click",function(d){
+    var dataPoint = d3.select(this).attr("id");
+    if(dataPoint == "black_2010"){
+      changePopYear();
+    }
+    else if(dataPoint == "jail_2010"){
+      changeJail();
+    }
+    else if(dataPoint == "prison_1910"){
+      changeBubbles(1910,1);
+    }
+  })
 
   // }
 
