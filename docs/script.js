@@ -13,7 +13,7 @@ var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerW
 var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 var chapterItemes = d3.selectAll(".chapter-item");
 var slaveryYear = d3.select(".year-row-year");
-var remove = [2,4,6,8,15,20,27,30,31,32,35,38,40,46,49,56,72,78,16,41,53];
+var remove = [2,4,6,8,15,20,30,31,32,35,38,40,46,49,56,72,78,16,41,53];
 var scaleNote = d3.select(".scale-note");
 var navigatorElement = d3.select(".navigator");
 var toolTipText = "slaves";
@@ -91,7 +91,7 @@ var states = [
     .select("g")
     ;
 
-d3.csv("all_points_4.csv", function(error, allPoints) {
+d3.csv("all_points_5.csv", function(error, allPoints) {
   d3.json("us.json", function(error, us) {
     d3.csv("incarceration_2.csv", function(error, incarcerationData) {
 
@@ -931,6 +931,7 @@ d3.csv("all_points_4.csv", function(error, allPoints) {
         })
 
         circles.each(function(d,i){
+
           var x1 = +d.x;
           var y1 = +d.y;
           var distance = Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
@@ -1080,8 +1081,12 @@ d3.csv("all_points_4.csv", function(error, allPoints) {
           if(incarcerationMap.has(+d.id)){
             var incarceration = incarcerationMap.get(+d.id)["inc_"+state];
             if(incarceration != ""){
-              return incarceration/30;
-              return colorGradientIncarceration(+incarceration);
+              var first = Math.pow(+incarceration,.57);
+              var second = Math.pow(27,.57);
+              var third = Math.pow(868,0.57);
+              var fourth = Math.pow(27,0.57);
+              return 4 + ((30-4)*(first-second)/(third - fourth));
+              // return colorGradientIncarceration(+incarceration);
             }
           }
           return 0;
@@ -1721,7 +1726,7 @@ d3.csv("all_points_4.csv", function(error, allPoints) {
         var text = "Jail Incarceration Rate in "+year;
         startLabels.style("width","249px")
         startLabelChange(text);
-
+        slaveryLegendBottom.select(".jail-legend-title").html("<span class='slavery-legend-title-label'>color: </span>Jail Inmates per 100K People");
         jailSelector.transition().duration(1000).delay(1000).style("top","17px").style("opacity",1);
         fadeOutElements.transition().duration(1000).style("opacity",0);
         slaveryLegendTop.style("opacity",0);
