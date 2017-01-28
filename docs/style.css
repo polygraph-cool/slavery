@@ -763,7 +763,7 @@ a:visited{
   fill:#fff;
 }
 .jail-selector{
-  /*display: none;*/
+  /* display: none; */
   margin-bottom: 110px;
   margin-top: 31px;
   opacity: 0;
@@ -942,7 +942,6 @@ a:visited{
 .youtube-embed {
     padding: 10px 0 20px 0px;
     pointer-events: all;
-    display: none;
 }
 .source-container .prose{
   font-family: "Whitney SSm A", "Whitney SSm B";
@@ -996,12 +995,42 @@ a:visited{
   right: 0px;
   top: -21px;
   font-size: 9px;
-  opacity: .4;
-  font-weight: 900;
+  opacity: .6;
+  font-weight: 700;
   letter-spacing: .5px;
 }
+.prose-no-margin{
+  margin-bottom: -9px;
+  margin-top: 40px;
+}
+
 
 @media only screen and (max-width: 768px) {
+  .jail-legend-title{
+    font-size: 9px;
+  }
+  .jail-legend-bottom{
+    width: 150px;
+  }
+  .prose-no-margin{
+    display: none;
+  }
+  .slavery-container .legend-row{
+    -webkit-justify-content: space-around;
+    justify-content: space-around;
+  }
+  .jail-selector{
+    display: none;
+    top: 17px;
+    opacity: 1;
+    margin: 0px;
+  }
+  .slavery-legend-container{
+    width: 153px;
+  }
+  .incarceration-legend-container .slavery-legend-title{
+    width: 100%;
+  }
   .left-col{-webkit-flex-wrap: wrap;flex-wrap: wrap;width: 100%;/* display: block; */}
   .right-col{
     width: 100%;
@@ -1015,22 +1044,21 @@ a:visited{
     width: 93%;
     margin: 0px;
     padding: 0px;
-    margin-top: 40px;
-    height: 112px;
+    margin-top: 28px;
+    height: 103px;
     /* margin-left: 4%; */
   }
   .start-label{
-    top: 76vh;
+    top: 70vh;
     font-size: 20px;
     width: 82%;
   }
   .legend-row{
-    top: 86vh;
-    width: 88%;
+    top: 82vh;
+    width: 96%;
   }
   .map-wrapper{
-    width: 370px;
-    top: 16vh;
+    top: 21vh;
   }
   .content-container{
     position: absolute;
@@ -1063,10 +1091,10 @@ a:visited{
   .opening-section{
     background: white;
   }
-  .map-section-one{
+  .map-section{
     height: 100vh;
   }
-  .first-section{
+  .mobile-section{
     background: rgb(255, 255, 255);
   }
   .second-section{
@@ -1076,8 +1104,8 @@ a:visited{
     height: 100vh;
   }
   .title-text-small{
-    font-size: 66px;
-    line-height: 78px;
+    font-size: 60px;
+    line-height: 68px;
     text-align: left;
   }
   .by-lines{
@@ -1089,5 +1117,12 @@ a:visited{
   }
 }
 font-size: 9px;
+  }
+}
+-size: 9px;
+  }
+}
+
+-size: 9px;
   }
 }
