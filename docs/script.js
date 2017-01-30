@@ -949,16 +949,20 @@ d3.csv("all_points_5.csv", function(error, allPoints) {
         else{
           slaveryToolTipText.attr("x",null)
         }
-
-        if(yearSelected == "jail_2010"){
+        if(yearSelected == "jail_2010" || yearSelected == "jail_black_2010"){
           if(slavePercent > -1){
-            slaveryToolTipText.html("Jail Inmate Rate is <tspan style='font-size:21px;'>"+Math.round(slavePercent)+"</tspan> ");
+            slaveryToolTipText.html("Jail Inmate Rate is <tspan style='font-size:21px;'>"+commaFormat(Math.round(slavePercent))+"</tspan> ");
           } else{
             slaveryToolTipText.html("");
           }
         }
         else if(slavePercent > -1){
-          slaveryToolTipText.html("Population is <tspan style='font-size:21px;'>"+Math.round(slavePercent*100)+"%</tspan> "+toolTipText);
+          if(slavePercent > 0 && slavePercent < .01){
+            slaveryToolTipText.html("Population is <tspan style='font-size:21px;'>&#60;1%</tspan> "+toolTipText);
+          }
+          else {
+            slaveryToolTipText.html("Population is <tspan style='font-size:21px;'>"+Math.round(slavePercent*100)+"%</tspan> "+toolTipText);
+          }
         }
         else{
           slaveryToolTipText.html("");
